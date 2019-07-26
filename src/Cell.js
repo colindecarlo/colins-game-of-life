@@ -5,17 +5,28 @@ class Cell {
   }
 
   static dead() {
-    return new Cell;
+    return new Cell();
+  }
+
+  static alive() {
+    const cell = new Cell();
+    cell.animate();
+
+    return cell;
   }
 
   tick() {
     if (this.has3LiveNeighbours()) {
       this.animate();
     }
+
+    if (this.hasOnlyOneLiveNeighbour()) {
+      this.die();
+    }
   }
 
   has3LiveNeighbours() {
-    if (this.neighbours.length != 3) {
+    if (this.neighbours.length !== 3) {
       return false;
     }
 
@@ -23,11 +34,11 @@ class Cell {
   }
 
   isInanimate() {
-    return this.animated == false;
+    return this.animated === false;
   }
 
   isAnimate() {
-    return this.animated == true;
+    return this.animated === true;
   }
 
   animate() {
@@ -37,6 +48,19 @@ class Cell {
   addNeighbours(newNeighbours) {
     this.neighbours = [...this.neighbours, ...newNeighbours];
   }
+
+
+  die() {
+    this.animated = false;
+  }
+
+  hasOnlyOneLiveNeighbour() {
+    if (this.neighbours.length === 0) {
+      return false;
+    }
+
+    return this.neighbours.filter(neighbour => neighbour.isAnimate()).length === 1;
+  }
 }
 
-export default Cell
+export default Cell;

@@ -1,18 +1,17 @@
-import Cell from "../Cell";
+import Cell from '../Cell';
 
-describe("Cell", () => {
-
+describe('Cell', () => {
   const identity = cell => cell;
 
   function makeNeighbours(numberOfNeighbours, cb = identity) {
-    return Array.from({length: numberOfNeighbours}).map(_ => {
+    return Array.from({ length: numberOfNeighbours }).map(() => {
       const cell = Cell.dead();
       cb(cell);
       return cell;
     });
   }
 
-  describe("Inanimate Cells", () => {
+  describe('Inanimate Cells', () => {
     const animateCell = cell => cell.animate();
 
     let cell;
@@ -61,6 +60,27 @@ describe("Cell", () => {
       cell.tick();
 
       expect(cell.isInanimate()).toBe(true);
-    })
+    });
+  });
+
+  describe('Animate Cells', () => {
+    it('can be created as an animate cell', () => {
+      const cell = Cell.alive();
+
+      expect(cell.isAnimate()).toBe(true);
+    });
+  });
+
+  it('dies when it has only 1 live neighbour', () => {
+    const cell = Cell.alive();
+    cell.addNeighbours(makeNeighbours(1, neighbour => neighbour.animate()));
+
+    cell.tick();
+
+    expect(cell.isInanimate()).toBe(true);
+  });
+
+  it('stays alive when it has 2 live neighbours', () => {
+
   });
 });
