@@ -9,13 +9,25 @@ class Cell {
   }
 
   tick() {
-    if (this.neighbours.length == 3) {
+    if (this.has3LiveNeighbours()) {
       this.animate();
     }
   }
 
+  has3LiveNeighbours() {
+    if (this.neighbours.length != 3) {
+      return false;
+    }
+
+    return this.neighbours.every(neighbour => neighbour.isAnimate());
+  }
+
   isInanimate() {
     return this.animated == false;
+  }
+
+  isAnimate() {
+    return this.animated == true;
   }
 
   animate() {
