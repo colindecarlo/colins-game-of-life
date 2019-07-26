@@ -81,6 +81,10 @@ class Cell {
   shouldLive() {
     return this.has3LiveNeighbours();
   }
+
+  removeNeighbours() {
+    this.neighbours = [];
+  }
 }
 
 export default Cell;
