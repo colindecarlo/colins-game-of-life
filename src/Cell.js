@@ -16,21 +16,29 @@ class Cell {
   }
 
   tick() {
-    if (this.has3LiveNeighbours()) {
-      this.animate();
+    return this.isAnimate()
+      ? this.tickWhenAnimate()
+      : this.tickWhenInanimate();
+  }
+
+  tickWhenAnimate() {
+    if (!this.shouldDie()) {
+      return;
     }
 
-    if (this.hasOnlyOneLiveNeighbour()) {
-      this.die();
+    this.die();
+  }
+
+  tickWhenInanimate() {
+    if (!this.shouldLive()) {
+      return;
     }
+
+    this.animate();
   }
 
   has3LiveNeighbours() {
-    if (this.neighbours.length !== 3) {
-      return false;
-    }
-
-    return this.neighbours.every(neighbour => neighbour.isAnimate());
+    return this.liveNeighbours.length === 3;
   }
 
   isInanimate() {
@@ -54,12 +62,24 @@ class Cell {
     this.animated = false;
   }
 
-  hasOnlyOneLiveNeighbour() {
-    if (this.neighbours.length === 0) {
-      return false;
-    }
+  hasLessThan2LiveNeighbours() {
+    return this.liveNeighbours.length < 2;
+  }
 
-    return this.neighbours.filter(neighbour => neighbour.isAnimate()).length === 1;
+  get liveNeighbours() {
+    return this.neighbours.filter(neighbour => neighbour.isAnimate());
+  }
+
+  hasMoreThan3LiveNeighbours() {
+    return this.liveNeighbours.length > 3;
+  }
+
+  shouldDie() {
+    return this.hasLessThan2LiveNeighbours() || this.hasMoreThan3LiveNeighbours();
+  }
+
+  shouldLive() {
+    return this.has3LiveNeighbours();
   }
 }
 

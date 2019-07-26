@@ -2,6 +2,7 @@ import Cell from '../Cell';
 
 describe('Cell', () => {
   const identity = cell => cell;
+  const animateCell = cell => cell.animate();
 
   function makeNeighbours(numberOfNeighbours, cb = identity) {
     return Array.from({ length: numberOfNeighbours }).map(() => {
@@ -12,8 +13,6 @@ describe('Cell', () => {
   }
 
   describe('Inanimate Cells', () => {
-    const animateCell = cell => cell.animate();
-
     let cell;
 
     beforeEach(() => {
@@ -64,23 +63,51 @@ describe('Cell', () => {
   });
 
   describe('Animate Cells', () => {
+    let cell;
+    beforeEach(() => {
+      cell = Cell.alive();
+    });
+
     it('can be created as an animate cell', () => {
-      const cell = Cell.alive();
+      expect(cell.isAnimate()).toBe(true);
+    });
+
+    it('dies when it has only 1 live neighbour', () => {
+      cell.addNeighbours(makeNeighbours(1, animateCell));
+
+      cell.tick();
+
+      expect(cell.isInanimate()).toBe(true);
+    });
+
+    it('dies when it has no live neighbours', () => {
+      cell.tick();
+
+      expect(cell.isInanimate()).toBe(true);
+    });
+
+    it('stays alive when it has 2 live neighbours', () => {
+      cell.addNeighbours(makeNeighbours(2, animateCell));
+
+      cell.tick();
 
       expect(cell.isAnimate()).toBe(true);
     });
-  });
 
-  it('dies when it has only 1 live neighbour', () => {
-    const cell = Cell.alive();
-    cell.addNeighbours(makeNeighbours(1, neighbour => neighbour.animate()));
+    it('stays alive when it has 3 live neighbours', () => {
+      cell.addNeighbours(makeNeighbours(3, animateCell));
 
-    cell.tick();
+      cell.tick();
 
-    expect(cell.isInanimate()).toBe(true);
-  });
+      expect(cell.isAnimate()).toBe(true);
+    });
 
-  it('stays alive when it has 2 live neighbours', () => {
+    it.each([4, 5, 6, 7, 8])('dies when it more than 3 live neighbours', (numberOfNeighbours) => {
+      cell.addNeighbours(makeNeighbours(numberOfNeighbours, animateCell));
 
+      cell.tick();
+
+      expect(cell.isInanimate()).toBe(true);
+    });
   });
 });
