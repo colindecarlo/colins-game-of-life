@@ -9,7 +9,9 @@ class Cell {
   }
 
   tick() {
-    this.animate();
+    if (this.neighbours.length == 3) {
+      this.animate();
+    }
   }
 
   isInanimate() {
