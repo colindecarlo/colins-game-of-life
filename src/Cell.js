@@ -12,7 +12,7 @@ class Cell {
     this.animate();
   }
 
-  isDead() {
+  isInanimate() {
     return this.animated == false;
   }
 

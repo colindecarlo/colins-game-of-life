@@ -4,7 +4,7 @@ describe("Cell", () => {
   it('is dead when it is created', () => {
     const cell = Cell.dead();
 
-    expect(cell.isDead()).toBe(true);
+    expect(cell.isInanimate()).toBe(true);
   });
 
   it('can be animated', () => {
@@ -12,7 +12,7 @@ describe("Cell", () => {
 
     cell.animate();
 
-    expect(cell.isDead()).toBe(false);
+    expect(cell.isInanimate()).toBe(false);
   });
 
   it('becomes animated when it has 3 live neighbors', () => {
@@ -21,6 +21,6 @@ describe("Cell", () => {
 
     cell.tick();
 
-    expect(cell.isDead()).toBe(false);
+    expect(cell.isInanimate()).toBe(false);
   })
 });
