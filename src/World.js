@@ -1,6 +1,7 @@
 import CollisionError from './CollisionError';
 import Position from './Position';
 import Cell from './Cell';
+import ViewPort from './ViewPort';
 
 class World {
   constructor() {
@@ -11,6 +12,19 @@ class World {
     return Array.from(this.grid.values());
   }
 
+  get boundaries() {
+    const positions = Array.from(this.grid.keys(), position => Position.fromString(position));
+    const toSmallest = (smallest, value) => Math.min(smallest, value);
+    const toBiggest = (biggest, value) => Math.max(biggest, value);
+
+    const topMost = positions.map(position => position.y).reduce(toSmallest);
+    const leftMost = positions.map(position => position.x).reduce(toSmallest);
+    const bottomMost = positions.map(position => position.y).reduce(toBiggest);
+    const rightMost = positions.map(position => position.x).reduce(toBiggest);
+
+    return new ViewPort(new Position(leftMost - 1, topMost - 1), new Position(rightMost + 1, bottomMost + 1));
+  }
+
   seed(cells) {
     cells.forEach((cell) => {
       this.seedCell(cell, this.emptyPositionInRange());
@@ -19,18 +33,26 @@ class World {
 
   tick() {
     const nextGeneration = new Map();
-    this.grid.forEach((cell, position) => {
-      const nextGenCell = new Cell();
-      if (cell.isAnimate()) {
-        nextGenCell.animate();
+    const viewPort = this.boundaries;
+    for (let { y } = viewPort.topLeft; y <= viewPort.bottomRight.y; y++) {
+      for (let { x } = viewPort.topLeft; x <= viewPort.bottomRight.x; x++) {
+        const position = new Position(x, y);
+        const cell = this.cellAt(position);
+
+        const nextGenCell = new Cell();
+        if (cell.isAnimate()) {
+          nextGenCell.animate();
+        }
+
+        nextGenCell.addNeighbours(this.neighboursOf(position));
+        nextGenCell.tick();
+        nextGenCell.removeNeighbours();
+
+        if (nextGenCell.isAnimate()) {
+          nextGeneration.set(position.toString(), nextGenCell);
+        }
       }
-
-      nextGenCell.addNeighbours(this.neighboursOf(Position.fromString(position)));
-      nextGenCell.tick();
-      nextGenCell.removeNeighbours();
-
-      nextGeneration.set(position.toString(), nextGenCell);
-    });
+    }
 
     this.grid = nextGeneration;
   }
@@ -55,7 +77,7 @@ class World {
 
   cellAt(position) {
     const key = position.toString();
-    return this.grid.get(key);
+    return this.grid.get(key) || Cell.dead();
   }
 
   positionInRange() {

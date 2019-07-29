@@ -26,7 +26,7 @@ export default class Position {
   }
 
   right() {
-    return new Position(this.x, this.y + 1);
+    return new Position(this.x + 1, this.y);
   }
 
   bottomLeft() {
@@ -38,7 +38,7 @@ export default class Position {
   }
 
   bottomRight() {
-    return new Position(this.x - 1, this.y + 1);
+    return new Position(this.x + 1, this.y + 1);
   }
 
   toString() {

@@ -64,9 +64,29 @@ describe('World', () => {
   });
 
   it('can generate the next generation of the grid', () => {
-    world.seedCell(Cell.alive(), new Position(0, 0));
+    const glider = [
+      new Position(1, 0),
+      new Position(2, 1),
+      new Position(0, 2),
+      new Position(1, 2),
+      new Position(2, 2),
+    ];
+    glider.forEach(position => world.seedCell(Cell.alive(), position));
     world.tick();
 
-    expect(world.cellAt(new Position(0, 0)).isInanimate()).toBe(true);
+    expect(world.cellAt(new Position(0, 0)).isAnimate()).toBe(false);
+    expect(world.cellAt(new Position(1, 0)).isAnimate()).toBe(false);
+    expect(world.cellAt(new Position(2, 0)).isAnimate()).toBe(false);
+
+    expect(world.cellAt(new Position(0, 1)).isAnimate()).toBe(true);
+    expect(world.cellAt(new Position(1, 1)).isAnimate()).toBe(false);
+    expect(world.cellAt(new Position(2, 1)).isAnimate()).toBe(true);
+
+    expect(world.cellAt(new Position(0, 2)).isAnimate()).toBe(false);
+    expect(world.cellAt(new Position(1, 2)).isAnimate()).toBe(true);
+    expect(world.cellAt(new Position(2, 2)).isAnimate()).toBe(true);
+
+    expect(world.cellAt(new Position(1, 3)).isAnimate()).toBe(true);
+
   });
 });
