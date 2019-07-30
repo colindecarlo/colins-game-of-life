@@ -5,7 +5,10 @@ export default class Position {
   }
 
   static fromString(position) {
-    const coords = /\((\d+), (\d+)\)/.exec(position);
+    const coords = /\((-?\d+), (-?\d+)\)/.exec(position);
+    if (!coords) {
+      console.log({ position });
+    }
     return new Position(coords[1], coords[2]);
   }
 
