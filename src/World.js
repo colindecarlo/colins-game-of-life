@@ -13,6 +13,27 @@ class World {
     return Array.from(this.grid.values());
   }
 
+  get boundaryPositions() {
+    const viewPort = this.boundaries;
+    const positions = [];
+
+    // top & bottom row
+    for (let { x } = viewPort.topLeft; x <= viewPort.bottomRight.x; x++) {
+      positions.push(new Position(x, viewPort.topLeft.y), new Position(x, viewPort.bottomRight.y));
+    }
+
+    // left & right sides
+    for (let { y } = viewPort.topLeft; y <= viewPort.bottomRight.y; y++) {
+      positions.push(new Position(viewPort.topLeft.x, y), new Position(viewPort.bottomRight.x, y));
+    }
+
+    return positions;
+  }
+
+  get liveCellPositions() {
+    return Array.from(this.grid.keys()).map(key => Position.fromString(key));
+  }
+
   get boundaries() {
     const positions = Array.from(this.grid.keys(), position => Position.fromString(position));
     const toSmallest = (smallest, value) => Math.min(smallest, value);
@@ -38,13 +59,25 @@ class World {
 
   tick() {
     const nextGeneration = new Map();
-    const viewPort = this.boundaries;
+    const positionsOfInterest = new Set();
 
-    for (let { y } = viewPort.topLeft; y <= viewPort.bottomRight.y; y++) {
-      for (let { x } = viewPort.topLeft; x <= viewPort.bottomRight.x; x++) {
-        this.tickCell(x, y, nextGeneration);
-      }
-    }
+    this.boundaryPositions.forEach(position => positionsOfInterest.add(position.toString()));
+
+    this.liveCellPositions
+      .flatMap(position => [position, ...position.neighbouringPositions()])
+      .forEach(position => positionsOfInterest.add(position.toString()));
+
+    positionsOfInterest
+      .forEach((foo) => {
+        const position = Position.fromString(foo);
+        this.tickCell(position.x, position.y, nextGeneration);
+      });
+
+    // for (let { y } = viewPort.topLeft; y <= viewPort.bottomRight.y; y++) {
+    //   for (let { x } = viewPort.topLeft; x <= viewPort.bottomRight.x; x++) {
+    //     this.tickCell(x, y, nextGeneration);
+    //   }
+    // }
 
 
     // get the bounding box

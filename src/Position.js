@@ -6,10 +6,10 @@ export default class Position {
 
   static fromString(position) {
     const coords = /\((-?\d+), (-?\d+)\)/.exec(position);
-    if (!coords) {
+    if (!coords || isNaN(parseInt(coords[1], 10)) || isNaN(parseInt(coords[2], 10))) {
       console.log({ position });
     }
-    return new Position(coords[1], coords[2]);
+    return new Position(parseInt(coords[1], 10), parseInt(coords[2], 10));
   }
 
   topLeft() {
@@ -42,6 +42,21 @@ export default class Position {
 
   bottomRight() {
     return new Position(this.x + 1, this.y + 1);
+  }
+
+  neighbouringPositions() {
+    return [
+      this.topLeft(),
+      this.top(),
+      this.topRight(),
+
+      this.left(),
+      this.right(),
+
+      this.bottomLeft(),
+      this.bottom(),
+      this.bottomRight(),
+    ];
   }
 
   toString() {
