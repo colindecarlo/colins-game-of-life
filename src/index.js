@@ -4,7 +4,11 @@ import Cell from './Cell';
 import ViewPort from './ViewPort';
 import HtmlCanvas from './HtmlCanvas';
 
-const world = new World(new Position(99, 99));
+const canvasScale = 5;
+const gridSize = 200;
+
+const bottomRight = new Position(gridSize - 1, gridSize - 1);
+const world = new World(bottomRight);
 const glider = [
   new Position(1, 0),
   new Position(2, 1),
@@ -12,19 +16,19 @@ const glider = [
   new Position(1, 2),
   new Position(2, 2),
 ];
-// glider.forEach(position => world.seedCell(Cell.alive(), position));
+glider.forEach(position => world.seedCell(Cell.alive(), position));
 
-world.seed(Array.from({ length: 5000 }, () => Cell.alive()));
+world.seed(Array.from({ length: (gridSize * gridSize / 4) }, () => Cell.alive()));
 
 const canvasEl = document.getElementById('the-canvas');
 
 const viewport = new ViewPort(
   new Position(0, 0),
-  new Position(canvasEl.width - 1, canvasEl.height - 1),
+  bottomRight,
 );
 console.log(viewport);
 
-const canvas = new HtmlCanvas(canvasEl);
+const canvas = new HtmlCanvas(canvasEl, gridSize, canvasScale);
 
 console.log({
   world,
