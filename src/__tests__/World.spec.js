@@ -7,13 +7,17 @@ describe('World', () => {
   let world;
 
   beforeEach(() => {
-    world = new World();
+    world = new World(new Position(15, 15));
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('can be seeded with cells', () => {
-    world.seed(Array.from({ length: 100 }).map(() => Cell.alive()));
+    world.seed(Array.from({ length: 10 }).map(() => Cell.alive()));
 
-    expect(world.cells).toHaveLength(100);
+    expect(world.cells).toHaveLength(10);
   });
 
   it('can seed a cell a specific position', () => {
@@ -43,8 +47,8 @@ describe('World', () => {
 
     world.seed([cell1, cell2]);
 
-    expect(world.cellAt(new Position(1, 2))).toBe(cell1);
-    expect(world.cellAt(new Position(3, 4))).toBe(cell2);
+    expect(world.cellAt(new Position(3, 3))).toBe(cell1);
+    expect(world.cellAt(new Position(4, 4))).toBe(cell2);
   });
 
   it('seeds cells at random positions without collisions', () => {
@@ -59,8 +63,8 @@ describe('World', () => {
 
     world.seed([cell1, cell2]);
 
-    expect(world.cellAt(new Position(1, 2))).toBe(cell1);
-    expect(world.cellAt(new Position(3, 4))).toBe(cell2);
+    expect(world.cellAt(new Position(3, 3))).toBe(cell1);
+    expect(world.cellAt(new Position(4, 4))).toBe(cell2);
   });
 
   it('can generate the next generation of the grid', () => {

@@ -54,7 +54,6 @@ class World {
     cells.forEach((cell) => {
       this.seedCell(cell, this.emptyPositionInRange());
     });
-    console.log('seeded!');
   }
 
   tick() {
@@ -72,41 +71,6 @@ class World {
         const position = Position.fromString(foo);
         this.tickCell(position.x, position.y, nextGeneration);
       });
-
-    // for (let { y } = viewPort.topLeft; y <= viewPort.bottomRight.y; y++) {
-    //   for (let { x } = viewPort.topLeft; x <= viewPort.bottomRight.x; x++) {
-    //     this.tickCell(x, y, nextGeneration);
-    //   }
-    // }
-
-
-    // get the bounding box
-
-    // get the topLeftMost cell
-    // get min of that and veiwport topLeftMost
-    // get the bottomRightMost cell
-    // get min of that and viewport bottomRightMost
-
-    // add a perimeter to it
-
-    // traverse the perimeter, ticking the dead cells
-
-    // traverse the top and bottom rows
-    // for (let { x } = viewPort.topLeft; x <= viewPort.bottomRight.x; x++) {
-    //   this.tickCell(x, viewPort.topLeft.y, nextGeneration);
-    //   this.tickCell(x, viewPort.bottomRight.y, nextGeneration);
-    // }
-
-    // for (let { y } = viewPort.topLeft; y <= viewPort.bottomRight.y; y++) {
-    //   this.tickCell(viewPort.topLeft.x, y, nextGeneration);
-    //   this.tickCell(viewPort.bottomRight.x, y, nextGeneration);
-    // }
-
-    // visit each live cell and tick it
-    // this.grid.forEach((cell, coords) => {
-    //   const position = Position.fromString(coords);
-    //   this.tickCell(position.x, position.y, nextGeneration);
-    // });
 
     this.grid = nextGeneration;
   }
@@ -153,8 +117,10 @@ class World {
   }
 
   positionInRange() {
-    const x = Math.floor(Math.random() * this.bottomRight.x);
-    const y = Math.floor(Math.random() * this.bottomRight.y);
+    const initialWidth = Math.floor(this.bottomRight.x / 2);
+    const initialheight = Math.floor(this.bottomRight.y / 2);
+    const x = Math.floor(Math.random() * initialWidth) + Math.floor(initialWidth / 2);
+    const y = Math.floor(Math.random() * initialheight) + Math.floor(initialheight / 2);
 
     return new Position(x, y);
   }

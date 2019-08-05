@@ -24,7 +24,7 @@ export default class HtmlCanvas {
     const toClear = [...this.lastPrint].filter(position => !stillPrinted.has(position));
 
     this.render(toPrint, 'black');
-    this.render(toClear, 'white');
+    this.render(toClear, 'gray');
 
     this.lastPrint = new Set(currentPrint);
   }

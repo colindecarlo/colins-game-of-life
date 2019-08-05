@@ -6,9 +6,6 @@ export default class Position {
 
   static fromString(position) {
     const coords = /\((-?\d+), (-?\d+)\)/.exec(position);
-    if (!coords || isNaN(parseInt(coords[1], 10)) || isNaN(parseInt(coords[2], 10))) {
-      console.log({ position });
-    }
     return new Position(parseInt(coords[1], 10), parseInt(coords[2], 10));
   }
 
